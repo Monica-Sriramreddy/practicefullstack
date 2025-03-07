@@ -3,28 +3,42 @@ const app = express();
 
 let requestCount = 0;
 
-app.get("/add", function (req, res) {
+function requestIncreaser(req, res, next) {
   requestCount = requestCount + 1;
   console.log("Total number of requests = " + requestCount);
   //console.log(`Total number of requests = ${requestCount}`);
+  next();
+}
+
+function realSumHandler(req, res) {
   //main logic
   const a = parseInt(req.query.a);
   const b = parseInt(req.query.b);
 
   res.json({
-    answer: a - b,
+    answer: a + b,
   });
-});
+}
 
-app.get("/multiply", function (req, res) {
-  requestCount = requestCount + 1;
-  console.log("Total number of requests = " + requestCount);
-  const a = parseInt(req.query.a);
-  const b = parseInt(req.query.b);
+app.get("/add", requestIncreaser, realSumHandler);
 
-  res.json({
-    answer: a * b,
-  });
-});
+// app.get("/add", requestIncreaser, function (req, res) {
+//   //main logic
+//   const a = parseInt(req.query.a);
+//   const b = parseInt(req.query.b);
+
+//   res.json({
+//     answer: a + b,
+//   });
+// });
+
+// app.get("/multiply", requestIncreaser, function (req, res) {
+//   const a = parseInt(req.query.a);
+//   const b = parseInt(req.query.b);
+
+//   res.json({
+//     answer: a * b,
+//   });
+// });
 
 app.listen(3001);
